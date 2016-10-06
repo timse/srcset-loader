@@ -1,0 +1,24 @@
+{
+  "name": "srcset-loader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "example:simple": "webpack --config example/simple/webpack.config.js",
+    "example:file": "webpack --config example/file/webpack.config.js",
+    "example:optimized": "webpack --config example/optimized/webpack.config.js"
+  },
+  "keywords": [],
+  "author": "Tim Sebastian <tim.sebastian@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "file-loader": "0.9.0",
+    "image-webpack-loader": "2.0.0",
+    "webpack": "1.13.2"
+  },
+  "dependencies": {
+    "image-size": "0.5.0",
+    "loader-utils": "0.2.16",
+    "sharp": "0.16.0"
+  }
+}
