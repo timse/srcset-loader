@@ -60,10 +60,11 @@ module.exports = function(content){
 };
 
 module.exports.pitch = function(remainingRequest) {
-  var query = loaderUtils.parseQuery(this.resourceQuery);
+  var resourceQuery = loaderUtils.parseQuery(this.resourceQuery);
+  var loaderQuery = loaderUtils.parseQuery(this.query);
   const [loaders, resource] = splitRemainingRequest(remainingRequest);
   
-  const sources = buildSources(query.sizes, loaders, resource);
+  const sources = buildSources(resourceQuery.sizes || loaderQuery.sizes, loaders, resource);
   const exportSources = stringifySources(sources);
   const exportSrcSet = stringifySrcSet(sources);
   return `
