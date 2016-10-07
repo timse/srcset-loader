@@ -1,5 +1,5 @@
-var whale = require('../whale.jpeg?srcset&sizes[]=200w&sizes[]=800w');
-var paris = require('../paris.jpeg?srcset&sizes[]=200w&sizes[]=800w');
+var whale = require('../whale.jpeg?sizes=200w+800w');
+var paris = require('../paris.jpeg?sizes=200w+800w');
 
 [whale, paris].forEach((src) => {
   const image = new Image();

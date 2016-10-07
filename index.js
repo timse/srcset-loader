@@ -55,16 +55,42 @@ function stringifySrcSet(sources) {
   }).join('+","+');
 }
 
+function extractSizeFromQuery(queryString) {
+  const query = loaderUtils.parseQuery(queryString);
+  if (!query.sizes) {
+    return null;
+  }
+
+  if (Array.isArray(query.sizes)) {
+    return query.sizes;
+  }
+
+  return query.sizes.split('+');
+}
+
+function getSizes(resourceQuery, loaderQuery) {
+  resourceSize = extractSizeFromQuery(resourceQuery);
+  if (resourceSize) {
+    return resourceSize;
+  }
+
+  return extractSizeFromQuery(loaderQuery);
+}
+
 module.exports = function(content){
   return content;
 };
 
 module.exports.pitch = function(remainingRequest) {
-  var resourceQuery = loaderUtils.parseQuery(this.resourceQuery);
-  var loaderQuery = loaderUtils.parseQuery(this.query);
+  const sizes = getSizes(this.resourceQuery, this.query);
+  if (!sizes) {
+    console.error('no sizes specified, skipping...');
+    return;
+  }
+
   const [loaders, resource] = splitRemainingRequest(remainingRequest);
   
-  const sources = buildSources(resourceQuery.sizes || loaderQuery.sizes, loaders, resource);
+  const sources = buildSources(sizes, loaders, resource);
   const exportSources = stringifySources(sources);
   const exportSrcSet = stringifySrcSet(sources);
   return `
