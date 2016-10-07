@@ -17,7 +17,7 @@ module.exports = {
         {
           test: /whale.jpeg/,
           loaders: [
-            '../../index.js?sizes[]=200w&sizes[]=800w',
+            '../../index.js?sizes=200w+800w',
             'file?hash=sha512&digest=hex&name=[hash].[ext]',
           ]
         },
