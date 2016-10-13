@@ -77,12 +77,23 @@ function getSizes(resourceQuery, loaderQuery) {
   return extractSizeFromQuery(loaderQuery);
 }
 
+function shouldCreatePlaceholder(resourceQuery, loaderQuery) {
+  const resourceOptions = loaderUtils.parseQuery(resourceQuery);
+  const loaderOptions = loaderUtils.parseQuery(loaderQuery);
+
+  if (resourceOptions.placeholder === false) {
+    return false;
+  }
+  return resourceOptions.placeholder || loaderOptions.placeholder;
+}
+
 module.exports = function(content){
   return content;
 };
 
 module.exports.pitch = function(remainingRequest) {
   const sizes = getSizes(this.resourceQuery, this.query);
+  const placeholder = shouldCreatePlaceholder(this.resourceQuery, this.query);
   if (!sizes) {
     console.error('no sizes specified, skipping...');
     return;
@@ -93,10 +104,12 @@ module.exports.pitch = function(remainingRequest) {
   const sources = buildSources(sizes, loaders, resource);
   const exportSources = stringifySources(sources);
   const exportSrcSet = stringifySrcSet(sources);
+  const placeholderScript = placeholder ? `placeholder: require('!!${path.join(__dirname, './placeholder')}!${resource}'),` : '';
   return `
 module.exports = {
   sources: ${exportSources},
-  srcSet: ${exportSrcSet}
-}
+  srcSet: ${exportSrcSet},
+  ${placeholderScript}
+};
 `;
 }
