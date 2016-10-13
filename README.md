@@ -5,9 +5,9 @@ A super flexible and easily chainable (with other loaders like `file-loader` or 
 
 `npm i -D srcset-loader`
 
-## `srcset`-object
+## Result of an image loaded with srcset-loader
 
-An image required with the `srcset-loader` returns an Object containing two keys:
+An image required with the `srcset-loader` returns an Object containing some keys:
 
 ### `srcSet`-string
 
@@ -36,6 +36,29 @@ e.g.
   }
   */
 ```
+
+### `placeholder`-Object
+
+To activate the generation of placeholders you need to enable the `placeholder` option either in the loader config or the resource.
+This will generate an object with these keys:
+ - `url` a small blurred inline-svg that can be shown before the actual image is loaded. 
+ - `color` an array containing the rgba color representing the most ubiquitos color of the image. [r, g, b, a]
+ - `ratio` the height to width ratio of the image
+
+e.g.
+
+```js
+  const someSrcSet = require('./someImage.jpg?sizes=800w+500w+200w&placeholder');
+  /* 
+  someSrcSet.placeholder => {
+    url: 'data:image/svg+xml;base64,...',
+    color: [198, 123, 87, 255],
+    ratio: 0.63
+  }
+  */
+```
+
+check the placeholder example for a possible usecase.
 
 ## Usage
 
