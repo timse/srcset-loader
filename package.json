@@ -14,6 +14,9 @@
   "author": "Tim Sebastian <tim.sebastian@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "eslint": "3.7.1",
+    "eslint-config-airbnb-base": "8.0.0",
+    "eslint-plugin-import": "1.16.0",
     "file-loader": "0.9.0",
     "image-webpack-loader": "2.0.0",
     "webpack": "1.13.2"
