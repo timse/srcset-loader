@@ -1,36 +1,32 @@
-var sharp = require('sharp');
-var sizeOf = require('image-size');
-var loaderUtils = require('loader-utils');
+const sharp = require('sharp');
+const sizeOf = require('image-size');
+const loaderUtils = require('loader-utils');
 
 
 function resizeImage(content, width) {
-  return new Promise(function (resolve, reject) {
-    const source = sizeOf(content);
+  const source = sizeOf(content);
 
-    // dont scale up images, let the browser do that
-    // and btw. wtf stop trying to fool me :P
-    if (source.width < width) {
-      return resolve(content);
-    }
+  // dont scale up images, let the browser do that
+  // and btw. wtf stop trying to fool me :P
+  if (source.width < width) {
+    return Promise.resolve(content);
+  }
 
-    const resizedImage = sharp(content)
-      .resize(width)
-      .toBuffer();
+  return sharp(content).resize(width).toBuffer();
+}
 
-    resolve(resizedImage);
-  });
-};
-
-module.exports = function (content) {
-  this.cacheable && this.cacheable();
+module.exports = function resizeLoader(content) {
+  if (this.cacheable) {
+    this.cacheable();
+  }
   const callback = this.async();
 
-  var query = loaderUtils.parseQuery(this.query);
+  const query = loaderUtils.parseQuery(this.query);
   const size = parseInt(query.size, 10);
-  var that = this;
-  resizeImage(content, size).then(function(buffer){
+
+  resizeImage(content, size).then((buffer) => {
     callback(null, buffer);
-  }, function(err){
+  }, (err) => {
     callback(err);
   });
 };

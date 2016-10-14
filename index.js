@@ -15,14 +15,14 @@ function splitRemainingRequest(remainingRequest) {
 }
 
 function rebuildRemainingRequest(loaders, resizeLoader, resource) {
-  return '-!' + [...loaders, resizeLoader, resource].join('!');
+  return `-!${[...loaders, resizeLoader, resource].join('!')}`;
 }
 
 function buildResizeLoader(rawSize) {
-  const size = parseInt(rawSize);
+  const size = parseInt(rawSize, 10);
   return url.format({
     pathname: path.join(__dirname, './resize'),
-    search: querystring.stringify({size}),
+    search: querystring.stringify({ size }),
   });
 }
 
@@ -34,8 +34,9 @@ function createRequest(size, loaders, resource) {
 
 function buildSources(sizes, loaders, resource) {
   return sizes.reduce((queryObject, size) => {
-    queryObject[size] = createRequest(size, loaders, resource);
-    return queryObject;
+    return Object.assign({}, queryObject, {
+      [size]: createRequest(size, loaders, resource),
+    });
   }, {});
 }
 
@@ -43,7 +44,7 @@ function stringifySources(sources) {
   return `
 {
   ${Object.keys(sources).map((source) => {
-    return `"${source}": ${sources[source]}`
+    return `"${source}": ${sources[source]}`;
   }).join(',\n')}
 }
 `;
@@ -51,7 +52,7 @@ function stringifySources(sources) {
 
 function stringifySrcSet(sources) {
   return Object.keys(sources).map((size) => {
-    return `${sources[size]} + " ${size}"`
+    return `${sources[size]} + " ${size}"`;
   }).join('+","+');
 }
 
@@ -69,7 +70,7 @@ function extractSizeFromQuery(queryString) {
 }
 
 function getSizes(resourceQuery, loaderQuery) {
-  resourceSize = extractSizeFromQuery(resourceQuery);
+  const resourceSize = extractSizeFromQuery(resourceQuery);
   if (resourceSize) {
     return resourceSize;
   }
@@ -77,26 +78,37 @@ function getSizes(resourceQuery, loaderQuery) {
   return extractSizeFromQuery(loaderQuery);
 }
 
-module.exports = function(content){
+function shouldCreatePlaceholder(resourceQuery, loaderQuery) {
+  const resourceOptions = loaderUtils.parseQuery(resourceQuery);
+  const loaderOptions = loaderUtils.parseQuery(loaderQuery);
+
+  if (resourceOptions.placeholder === false) {
+    return false;
+  }
+  return resourceOptions.placeholder || loaderOptions.placeholder;
+}
+
+module.exports = function srcSetLoader(content) {
   return content;
 };
 
-module.exports.pitch = function(remainingRequest) {
+module.exports.pitch = function srcSetLoaderPitch(remainingRequest) {
   const sizes = getSizes(this.resourceQuery, this.query);
+  const placeholder = shouldCreatePlaceholder(this.resourceQuery, this.query);
+  const [loaders, resource] = splitRemainingRequest(remainingRequest);
   if (!sizes) {
-    console.error('no sizes specified, skipping...');
-    return;
+    throw new Error(`srcset-loader - no sizes specified for request ${resource}`);
   }
 
-  const [loaders, resource] = splitRemainingRequest(remainingRequest);
-  
   const sources = buildSources(sizes, loaders, resource);
   const exportSources = stringifySources(sources);
   const exportSrcSet = stringifySrcSet(sources);
+  const placeholderScript = placeholder ? `placeholder: require('!!${path.join(__dirname, './placeholder')}!${resource}'),` : '';
   return `
 module.exports = {
   sources: ${exportSources},
-  srcSet: ${exportSrcSet}
-}
+  srcSet: ${exportSrcSet},
+  ${placeholderScript}
+};
 `;
-}
+};

@@ -8,17 +8,23 @@
     "example:file": "webpack --config example/file/webpack.config.js",
     "example:optimized": "webpack --config example/optimized/webpack.config.js",
     "example:loader": "webpack --config example/loader-query/webpack.config.js",
-    "example:bulk": "webpack --config example/loader-query-bulk/webpack.config.js"
+    "example:bulk": "webpack --config example/loader-query-bulk/webpack.config.js",
+    "example:placeholder": "webpack --config example/placeholder/webpack.config.js"
   },
   "keywords": [],
   "author": "Tim Sebastian <tim.sebastian@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "eslint": "3.7.1",
+    "eslint-config-airbnb-base": "8.0.0",
+    "eslint-plugin-import": "1.16.0",
     "file-loader": "0.9.0",
     "image-webpack-loader": "2.0.0",
     "webpack": "1.13.2"
   },
   "dependencies": {
+    "datauri": "1.0.4",
+    "get-pixels": "3.3.0",
     "image-size": "0.5.0",
     "loader-utils": "0.2.16",
     "sharp": "0.16.0"

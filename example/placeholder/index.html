@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      .wrapper{
+        position: relative;
+        width: 25%;
+        display: inline-block;
+      }
+      .image-wrapper{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .image {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: auto;
+        box-sizing: border-box;
+      }
+      .placeholder {
+        visibility: visible;
+        opacity: 1;
+        transition: visibility 0s linear 1.6s,opacity .7s 1s;
+      }
+      .fullsize {
+        visibility: hidden;
+        opacity: 0; 
+        transition: visibility 0s linear 1s,opacity .7s 1s;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Placeholders</h1>
+    <p>load transition is extra slow - you will not want to use this in production probably</p>
+    <div>
+      <h2>Just "average" color before load</h2>
+      <div id="color"></div>
+    </div>
+    <div>
+      <h2>Just blurred image before load</h2>
+      <div id="image"></div>
+    </div>
+    <div>
+      <h2>Blurred image with color as fallback before load</h2>
+      <div id="fallback"></div>
+    </div>
+    <script type="text/javascript" src="build/main.js" defer></script>
+  </body>
+</html>
