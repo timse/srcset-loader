@@ -14,6 +14,10 @@
   "keywords": [],
   "author": "Tim Sebastian <tim.sebastian@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timse/srcset-loader"
+  },
   "devDependencies": {
     "eslint": "3.7.1",
     "eslint-config-airbnb-base": "8.0.0",
