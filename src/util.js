@@ -3,6 +3,10 @@ import sharp from 'sharp';
 import sizeOf from 'image-size';
 
 export function parseQuery(query) {
+  if (!query) {
+    return {};
+  }
+
   if (typeof query === 'string') {
     return loaderUtils.parseQuery(query);
   }

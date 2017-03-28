@@ -12,3 +12,4 @@
     - `out.srcSet` is removed from the output as it can be computed using `out.sources`
     - `out.placeholder` does not return an SVG anymore, only the raw image in base64.
     - Utilities are available in `srcset-loader/util.js` to generate both the srcSet string and the svg.
+- `placeholder.color` now returns the alpha channel as a float instead of an int.

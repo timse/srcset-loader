@@ -1,6 +1,5 @@
 import url from 'url';
 import path from 'path';
-import querystring from 'querystring';
 import { parseQuery } from './util';
 
 const DEFAULT_SIZE = 'default';
@@ -25,7 +24,7 @@ function buildResizeLoader(rawSize) {
 
   return url.format({
     pathname: path.join(__dirname, './resize-loader'),
-    search: querystring.stringify({ size }),
+    query: { size },
   });
 }
 
@@ -41,12 +40,14 @@ function createResizeRequest(size, existingLoaders, resource) {
 function createPlaceholderRequest(resource, size, lightweight) {
   const loaderOptions = {
     pathname: path.join(__dirname, './placeholder-loader'),
-    lightweight,
+    query: {
+      lightweight,
+    },
   };
 
   const actualSize = Number(size);
   if (!Number.isNaN(actualSize)) {
-    loaderOptions.size = actualSize;
+    loaderOptions.query.size = actualSize;
   }
 
   return `require('!!${url.format(loaderOptions)}!${resource}')`;
@@ -88,7 +89,7 @@ function stringifySources(sources) {
 function stringifySrcSet(sources) {
   return Object.keys(sources).map((size) => {
     if (size === 'default') {
-      return `"${size}"`;
+      return `${sources[size]}`;
     }
 
     return `${sources[size]} + " ${size}"`;
@@ -144,7 +145,7 @@ srcSetLoader.pitch = function srcSetLoaderPitch(remainingRequest) {
     : loaderQuery.sizes);
 
   // neither is requested, no need to run this loader.
-  if (!placeholder || !sizes) {
+  if (!placeholder && !sizes) {
     return undefined;
   }
 
@@ -168,3 +169,6 @@ module.exports = {
 };
 `;
 };
+
+// webpack pitch loaders expect commonJS
+module.exports.pitch = srcSetLoader.pitch;

@@ -28,7 +28,11 @@ function getColor(buffer, imageType) {
   const type = `image/${imageType}`;
 
   return resizeImage(buffer, 2, 2)
-    .then((shrinkedImageBuffer) => getPixelsAsync(shrinkedImageBuffer, type));
+    .then((shrinkedImageBuffer) => getPixelsAsync(shrinkedImageBuffer, type))
+    .then(color => {
+      color[3] = Math.round(color[3] / 255 * 1000) / 1000;
+      return color;
+    });
 }
 
 function createPlaceholder(content, options) {
