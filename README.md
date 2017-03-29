@@ -25,7 +25,7 @@ const webpackConfig = {
       test: /\.(jpe?g|png|svg|gif)$/,
       
       // match one of the loader's main parameters (sizes and placeholder)
-      resourceQuery: /[?&](sizes|placeholder)(=|&|$)/,
+      resourceQuery: /[?&](sizes|placeholder)(=|&|\[|$)/,
       
       use: [
         'srcset-loader',
