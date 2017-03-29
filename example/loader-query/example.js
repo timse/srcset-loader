@@ -1,5 +1,5 @@
-var whale = require('../whale.jpeg');
-var paris = require('../paris.jpeg');
+import whale from '../whale.jpeg';
+import paris from '../paris.jpeg';
 
 // loaded via srcset loader as specified in the webpack config
 const whaleImage = new Image();
