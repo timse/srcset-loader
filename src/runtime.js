@@ -16,19 +16,22 @@ export function blurPlaceholder(img, toBase64) {
   const ratio = placeholder.ratio;
 
   const svg = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${10 * ratio} ${10 * (1 - ratio)}">
+<svg 
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns="http://www.w3.org/2000/svg" 
+  viewBox="0 0 ${10 * ratio} ${10 * (1 - ratio)}"
+>
   <filter id="x">
     <feGaussianBlur stdDeviation="1" />
   </filter>
-  <image 
+  <image
     width="100%" 
-    height="100%" 
-    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    height="100%"  
     xlink:href="${placeholder.url}" 
     filter="url(#x)"
   />
 </svg>
   `;
 
-  return `data:image/svg;base64,${(toBase64 || btoa)(svg)}`; // eslint-disable-line no-undef
+  return `data:image/svg+xml;base64,${(toBase64 || btoa)(svg)}`; // eslint-disable-line no-undef
 }
