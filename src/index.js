@@ -45,12 +45,20 @@ function createPlaceholderRequest(resource, size, lightweight) {
     },
   };
 
-  const actualSize = Number(size);
+  const actualSize = toNumber(size);
   if (!Number.isNaN(actualSize)) {
     loaderOptions.query.size = actualSize;
   }
 
   return `require('!!${url.format(loaderOptions)}!${resource}')`;
+}
+
+function toNumber(item) {
+  if (typeof item !== 'string') {
+    return Number.NaN;
+  }
+
+  return Number(item);
 }
 
 function forEach(items, cb) {
