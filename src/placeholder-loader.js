@@ -50,11 +50,11 @@ function createPlaceholder(content, options) {
       }
 
       const blurredImage = (
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size.width} ${size.height}">
+        `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${size.width} ${size.height}">
           <filter id="x">
             <feGaussianBlur stdDeviation="1" />
           </filter>
-          <image width="100%" height="100%" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="${imageUrl}" filter="url(#x)"/>
+          <image width="100%" height="100%" xlink:href="${imageUrl}" filter="url(#x)"/>
         </svg>`
       );
 
