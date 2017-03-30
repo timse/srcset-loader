@@ -1,0 +1,8 @@
+{
+  "main": "./example.js",
+  "name": "srcset-loader-file-example",
+  "private": true,
+  "scripts": {
+    "build": "../../node_modules/.bin/webpack ."
+  }
+}

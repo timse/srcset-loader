@@ -1,64 +1,12 @@
-# `srcset`-loader for webpack
-A super flexible and easily chainable (with other loaders like `file-loader` or `image-webpack-loader`) srcset loader for webpack
+# `srcset`-loader for webpack 2
+
+A super flexible and easily chainable (with other loaders like `file-loader` or `image-webpack-loader`) srcset loader for webpack 2.
+
+Its purpose is to automatically resize your images to the requested dimension*s* and return those as an srcSet.
 
 ## Installation
 
 `npm i -D srcset-loader`
-
-## Result of an image loaded with srcset-loader
-
-An image required with the `srcset-loader` returns an Object containing some keys:
-
-### `srcSet`-string
-
-The `srcSet`-string to be used in `<img srcset="..."/>`
-
-e.g.
-
-```js
-  const someSrcSet = require('./someImage.jpg?sizes=800w+500w+200w');
-  // someSrcSet.srcSet => 'xxxx.jpg 800w, xxxx.jpg 500w, xxxx.jpg 200w'
-```
-
-### `sources`-Object
-
-The `sources`-Object with urls to all images contained in the `srcSet`
-
-e.g.
-
-```js
-  const someSrcSet = require('./someImage.jpg?sizes=800w+500w+200w');
-  /* 
-  someSrcSet.sources => {
-    '800w': 'xxx.jpg',
-    '500w': 'xxx.jpg',
-    '200w': 'xxx.jpg'
-  }
-  */
-```
-
-### `placeholder`-Object
-
-To activate the generation of placeholders you need to enable the `placeholder` option either in the loader config or the resource.
-This will generate an object with these keys:
- - `url` a small blurred inline-svg that can be shown before the actual image is loaded. 
- - `color` an array containing the rgba color representing the most ubiquitos color of the image. [r, g, b, a]
- - `ratio` the height to width ratio of the image
-
-e.g.
-
-```js
-  const someSrcSet = require('./someImage.jpg?sizes=800w+500w+200w&placeholder');
-  /* 
-  someSrcSet.placeholder => {
-    url: 'data:image/svg+xml;base64,...',
-    color: [198, 123, 87, 255],
-    ratio: 0.63
-  }
-  */
-```
-
-check the placeholder example for a possible usecase.
 
 ## Usage
 
@@ -68,65 +16,50 @@ then specify the sizes for the `srcset` on the resource itself.
 
 e.g. your config could have a loader specified like this, notice the `?sizes` at the end of the resource match
 
-```js
-config.module.loaders.push({
-  test: /.*\.(jpe?g|png)\?sizes/,
-  loaders: [
-    'srcset',
-    'file?hash=sha512&digest=hex&name=[hash].[ext]',
-    'image-webpack?optimizationLevel=7&interlaced=false',
-  ]
-});
+```javascript
+const webpackConfig = {
+  // Only showing relevant parts.
+  module: {
+    rules: [{
+      // match image files
+      test: /\.(jpe?g|png|svg|gif)$/,
+      
+      // match one of the loader's main parameters (sizes and placeholder)
+      resourceQuery: /[?&](sizes|placeholder)(=|&|\[|$)/,
+      
+      use: [
+        'srcset-loader',
+
+        // any other loader
+        'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+        'image-webpack-loader?optimizationLevel=7&interlaced=false',
+      ],
+    }],
+  },
+  
+  // ...
+};
 ```
 
 and a resource request could look like this:
 
-```js
-var srcSet = require('../some-image.jpeg?sizes=200w+800w');
+```javascript
+import image from './image.jpeg?sizes=200w+800w';
 ```
 
-This allows us to seperate the configuration of the loader and the specification of the sizes of the `srcset`. 
+This allows us to separate the configuration of the loader, and the specification of the image sizes of the `srcset`.
 This also allows us to use the same loaders we use for *normal* image requests (e.g. optimizers like `webpack-image-loader` or the `file-loader`).
 Basically all this loader does is creating multiple requests for each `srcset` image and let known and well tested loaders do the heavy lifting.
 
-### Adding `srcset-loader` to the webpack config
+### Why is the `srcset` loader before the other loaders
 
-Most likely you will use a mixture of `file`/`url-loader` and `srcset-loader` therefore it makes sense to add a certain identifier to the `test` of the `srcset-loader`.
-In the example above `?sizes` is added to the check, as every request handled by the `srcset-loader` will contain this query param. All image request without this match will be handled like a plain old image.
-The `srcset-loader` then relies on and profits from other well known and tested loaders e.g. the `file-loader`. This also means it can only be used in conjunction with them as it wont emit files by itself. (see the `simple` example).
+Its actually very important that you add the `srcset-loader` before all the other loaders, as the `srcset-loader` uses 
+webpack's *pitch* mechanism to split your import request into multiple import request which will all use the loaders 
+specified after `srcset-loader`.
 
-Lets assume you already have the following config for loading images:
-
-```js
-{
-  test: /\.(png|jpg|gif|svg)$/,
-  loader: 'url-loader?limit=' + (3 * 1024) + '&name=[hash].[ext]!image-webpack?bypassOnDebug&optimizationLevel=7'
-},
-```
-
-adding the `srcset-loader` is as simple as:
-
- ```js
-const imageLoader = 'url-loader?limit=' + (3 * 1024) + '&name=[hash].[ext]!image-webpack?bypassOnDebug&optimizationLevel=7';
-// ...
-{
-  test: /\.(png|jpg|gif|svg)$/,
-  loader: imageLoader
-},
-{
-  test: /\.(png|jpg|gif|svg)\?sizes/,
-  loader: 'srcset' + imageLoader
-},
-```
-
-Thats it. You only configure how images should be loaded once. All images, including those created for the `srcset` will go through the same process.
-No inline-loaders or config in the code required. No differences in image quality either.
-
-#### Why is the `srcset` loader before the other loaders
-Its actually very important that you add the `srcset-loader` before all the other loaders, as the `srcset-loader` uses webpacks *pitch* mechanism to split requests up and pipe them through your specified loaders.
 Simplified it works something like this:
 
-```js
+```javascript
 // webpack gets this request
 const someSrcSet = require('./someImage.jpg?sizes=800w+500w+200w');
 
@@ -137,44 +70,95 @@ const someSrcSet = require('srcset-loader!url-loader!image-webpack-loader!./some
 
 // and splits it up into *three* requests looking more like this:
 const someSrcSet = [
-  require('url-loader!image-webpack-loader!./resize!./someImage.jpg?size=800'),
-  require('url-loader!image-webpack-loader!./resize!./someImage.jpg?size=500'),
-  require('url-loader!image-webpack-loader!./resize!./someImage.jpg?size=200'),
+  require('url-loader!image-webpack-loader!srcset-loader/resize!./someImage.jpg?size=800'),
+  require('url-loader!image-webpack-loader!srcset-loader/resize!./someImage.jpg?size=500'),
+  require('url-loader!image-webpack-loader!srcset-loader/resize!./someImage.jpg?size=200'),
 ];
 ```
 
 Thats all :), simple and robust.
 
-#### Can I use `srcset`-loader inline?
+### Can I use `srcset`-loader inline?
 Yes you can, but why? Seriously why? Please write an issue.
 
-### Specifying desired `srcset` sizes
-Once you setup the `srcset`-loader in the webpack config you can require your images and specify the sized you want.
-There are two ways to specify the sizes for you resource:
+## `srcset-loader` options
 
-#### array-style syntax
-The classical querystring style is via array notation. Lets say you want the sizes `800w` and `200w` for your image `./foo.jpg` a request would look as follows:
+### `sizes`
 
-```js
-const srcSet = require('./foo.jpg?sizes[]=800w&sizes[]=200w');
-```
+`sizes` is the main feature of the srcset-loader, you use this option to specify the different image sizes you wish to import.
 
-However this can become a problem, if you have a lot of sizes and limits to your line length, and its quite verbose anyways - though the correct way to specify an array. 
-Therefore there is a shorthand syntax you may also use
+You can either specify the different sizes as a standard array (`?sizes[]=100w&sizes[]=200w`) or using the less verbose, srcset-specific, syntax (`?sizes=100w+200w`)
 
-#### Shorthand syntax
-Instead of specifying the sizes like an array, just concatenate them with a `+`. The request from above now looks like this:
- ```js
-const srcSet = require('./foo.jpg?sizes=800w+200w');
-```
+The sizes values must follow the format `<number>w` (where w stands for width), or the string `default` (not resized). `<density>x` is not a supported format.
 
-**notice, its no longer an array but just a single param-key with a single value (which in fact is a concatenation of all the valus)**
+### `lightweight`
 
-#### Example
+This will remove any property that can be computed at runtime in order to reduce the size of the bundle.
+
+### `placeholder`
+
+`placeholder` will generate and inline a tiny placeholder which you can display while the full-sized image loads.
+
+You can specify the size of the placeholder as the value of the option (e.g. `placeholder=12`). By default, the size is 20px (width).
+
+## Results of an image loaded with srcset-loader
+
+An image imported with the `srcset-loader` returns an Object which contains the following properties:
+
+### `srcSet: string`
+
+This property contains the string to use as the value of `HTMLImageElement`'s `srcset` (i.e. `<img srcset="..."/>`).
+
 e.g.
 
-```jsx
-const someSrcSet = require('./someImage.jpg?sizes=800w+500w+200w');
-//...
-return (<img srcSet={someSrcSet.srcSet} src={someSrcSet.sources['800w']} sizes="(min-width: 1200px) 70vw, (min-width: 800px) 50vw, 200px" />);
+```javascript
+import image from './image.jpeg?sizes=200w+800w';
+// image.srcSet => 'xxxx.jpeg 200w,xxxx.jpeg 800w'
 ```
+
+*Note: This key is not available if `lightweight` is specified in either the Loader options or the resource query.*
+
+### `sources: object`
+
+The `sources` object is a map where the keys are the requested sizes of the image and the values are the URLs to those images.
+
+e.g.
+
+```javascript
+import image from './image.jpeg?sizes=200w+800w';
+
+/*
+image.sources => {
+  '200w': 'xxx.jpg',
+  '800w': 'xxx.jpg',
+}
+*/
+```
+
+### `placeholder`
+
+Only available if the option `placeholder` is present in either the loader configuration or the resource query.
+
+This will generate an object with these keys:
+ - `url`:
+    - if the `lightweight` option is present, a tiny version of the image, encoded in base64.
+    - otherwise, that tiny image but wrapped inside a SVG which applies a blur filter on the image.
+ - `color`: an array containing the rgba color representing the most ubiquitous color of the image. `[r, g, b, a]`
+ - `ratio`: the height to width ratio of the image.
+
+e.g.
+
+```js
+import image from './image.jpeg?sizes=200w+800w&placeholder';
+/* 
+image.placeholder => {
+  url: 'data:image/svg+xml;base64,...',
+  color: [198, 123, 87, 1],
+  ratio: 0.63
+}
+*/
+```
+
+check the placeholder example for a possible use case.
+
+*Note: You can use `placeholder` on its own, without specifying `sizes`.*

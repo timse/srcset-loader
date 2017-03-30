@@ -1,5 +1,5 @@
-var whale = require('../whale.jpeg?sizes[]=200w&sizes[]=800w');
-var paris = require('../paris.jpeg?sizes[]=200w&sizes[]=800w');
+const whale = require('../whale.jpeg?sizes[]=200w&sizes[]=800w');
+const paris = require('../paris.jpeg?sizes[]=200w&sizes[]=800w');
 
 [whale, paris].forEach((src) => {
   const image = new Image();
@@ -10,12 +10,12 @@ var paris = require('../paris.jpeg?sizes[]=200w&sizes[]=800w');
   document.body.appendChild(image);
 });
 
-var normalWhale = require('../whale.jpeg');
-var normalParis = require('../paris.jpeg');
+const normalWhale = require('../whale.jpeg');
+const normalParis = require('../paris.jpeg');
 
 [normalWhale, normalParis].forEach((src) => {
   const image = new Image();
-  image.src = src
+  image.src = src;
   image.style = 'width: 100%';
   document.body.appendChild(image);
 });

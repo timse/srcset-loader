@@ -7,11 +7,13 @@ config.entry = path.join(__dirname, 'example.js');
 config.output.path = path.join(__dirname, 'build');
 
 config.module.rules.unshift({
-  test: /whale.jpeg/,
+  test: /\.(jpe?g|png|gif|svg)$/,
+  resourceQuery: /[?&](sizes|placeholder)(=|&|$)/,
   loader: 'srcset-loader',
   options: {
-    sizes: ['200w', '800w'],
+    // these options can also be set directly on the resource query
     placeholder: true,
+    lightweight: true,
   },
 });
 

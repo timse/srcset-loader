@@ -1,3 +1,4 @@
+import { buildSrcSet, blurPlaceholder } from 'srcset-loader/runtime';
 import whale from '../whale.jpeg?sizes=200w+800w';
 import paris from '../paris.jpeg?sizes=200w+800w';
 
@@ -18,14 +19,16 @@ function createPlaceholder(src, placeholderOptions) {
   placeholderImage.className = 'image placeholder';
   if (placeholderOptions.image) {
     placeholderImage.src = src.placeholder.url;
+    placeholderImage.src = blurPlaceholder(src.placeholder);
   }
+
   if (placeholderOptions.color) {
     placeholderImage.style.setProperty('background-color', 'rgba(' + src.placeholder.color.join(',') + ')');
   }
 
   const image = new Image();
   image.className = 'image fullsize';
-  image.srcset = src.srcSet;
+  image.srcset = buildSrcSet(src);
   image.src = src.sources['800w'];
   image.sizes = '(min-width: 1000px) 500px, 200px';
   image.onload = function onload() {

@@ -1,20 +1,19 @@
 'use strict';
+
 const path = require('path');
 const config = require('../webpack.common.config');
 
 config.entry = path.join(__dirname, 'example.js');
-config.output = {
-  path: path.join(__dirname, 'build'),
-  filename: 'main.js',
-  publicPath: '/build/'
-};
-config.module.loaders.push({
-  test: /.*\.(jpe?g|png)\?sizes/,
-  loaders: [
-    '../../index.js?placeholder',
-    'file?hash=sha512&digest=hex&name=[hash].[ext]',
-    'image-webpack?optimizationLevel=7&progressive=true',
-  ]
+config.output.path = path.join(__dirname, 'build');
+
+config.module.rules.unshift({
+  test: /\.(jpe?g|png|gif|svg)$/,
+  resourceQuery: /[?&](sizes|placeholder)(=|&|$)/,
+  loader: 'srcset-loader',
+  options: {
+    // these options can also be set directly on the resource query
+    placeholder: true,
+  },
 });
 
 module.exports = config;
