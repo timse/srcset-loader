@@ -13,7 +13,8 @@
     "example:lightweight": "webpack --config example/lightweight/webpack.config.js",
     "build": "babel src --out-dir lib --copy-files",
     "build:watch": "npm run build -- --watch",
-    "test": "NODE_ENV=test mocha --compilers js:babel-core/register --reporter spec --check-leaks"
+    "test": "NODE_ENV=test mocha --compilers js:babel-core/register --reporter spec --check-leaks",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "webpack",
