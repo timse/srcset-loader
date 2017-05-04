@@ -66,10 +66,14 @@ function createPlaceholder(content, options) {
       return getColor(content, size.type);
     })
     .then((color) => {
+    
+      // Use the size of the unresized image to calculate the exact ratio
+      const originalContentSize = imageSize(content);
+    
       return {
         color,
         url: placeholderUrl,
-        ratio: (size.height / size.width),
+        ratio: (originalContentSize.height / originalContentSize.width),
       };
     });
 }
