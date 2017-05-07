@@ -1,6 +1,6 @@
 {
   "name": "srcset-loader",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Loader which automatically resizes your images in the desired dimensions, and generates light placeholders.",
   "main": "index.js",
   "scripts": {
