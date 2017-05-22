@@ -78,7 +78,7 @@ function buildSources(sizes, loaders, resource) {
     }
 
     const actualSize = size || DEFAULT_SIZE;
-    sources[actualSize] = createResizeRequest(actualSize, loaders, resource);
+    sources[actualSize] = createResizeRequest(actualSize, loaders, resource(size));
   });
 
   return sources;
@@ -159,7 +159,9 @@ srcSetLoader.pitch = function srcSetLoaderPitch(remainingRequest) {
 
   const [loaders, resource] = splitRemainingRequest(remainingRequest);
 
-  const sources = buildSources(sizes, loaders, resource);
+  const transformResource = loaderQuery.transformResource || ((resource, size) => resource + '?size=' + size)
+
+  const sources = buildSources(sizes, loaders, (size => transformResource(resource, size)));
 
   const srcSet = !lightweight
     ? `srcSet: ${stringifySrcSet(sources)},`
