@@ -178,17 +178,17 @@ describe('Resource Query', () => {
 
       return new Promise((resolve, reject) => {
         const imgTag = window.Image();
-        imgTag.addEventListener('load', function onLoad() {
+        imgTag.onload = function onLoad() {
           console.log(imgTag.naturalWidth);
           console.log(imgTag.naturalHeight);
 
           console.log(imgTag);
           resolve();
-        });
+        };
 
-        imgTag.addEventListener('error', function onError(e) {
+        imgTag.onerror = function onError(e) {
           reject(e);
-        });
+        };
 
         imgTag.src = img.placeholder.url;
       });
