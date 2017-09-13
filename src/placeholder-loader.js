@@ -73,7 +73,7 @@ function createPlaceholder(content, options) {
       return {
         color,
         url: placeholderUrl,
-        ratio: (originalContentSize.height / originalContentSize.width),
+        ratio: (originalContentSize.width / originalContentSize.height),
       };
     });
 }

@@ -144,7 +144,7 @@ This will generate an object with these keys:
     - if the `lightweight` option is present, a tiny version of the image, encoded in base64.
     - otherwise, that tiny image but wrapped inside a SVG which applies a blur filter on the image.
  - `color`: an array containing the rgba color representing the most ubiquitous color of the image. `[r, g, b, a]`
- - `ratio`: the height to width ratio of the image.
+ - `ratio`: the width to height ratio of the image.
 
 e.g.
 
@@ -154,7 +154,7 @@ import image from './image.jpeg?sizes=200w+800w&placeholder';
 image.placeholder => {
   url: 'data:image/svg+xml;base64,...',
   color: [198, 123, 87, 1],
-  ratio: 0.63
+  ratio: 1.587302
 }
 */
 ```
