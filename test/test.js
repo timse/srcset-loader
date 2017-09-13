@@ -11,6 +11,7 @@ const expect = chai.expect;
 
 const FILE_TYPES = /\.(jpe?g|png|gif|svg)$/i;
 const WHALE_IMG = './resources/whale.jpeg';
+const TOR_IMG = './resources/tor-portrait.jpeg';
 
 // matches the format
 // ((<path>( <size>)?)(,|$))+
@@ -57,6 +58,37 @@ describe('Resource Query', () => {
 
       validateImgGeneric(img);
       validatePlaceholder(img.placeholder);
+    });
+  });
+
+  it('?placeholder: returns the correct ratio for a landscape image', () => {
+    const compiler = makeCompiler({
+      files: {
+        'main.js': `window.img = require('${WHALE_IMG}?placeholder');`,
+      },
+      rule: RULE,
+    });
+
+    return runTest(compiler, (window) => {
+      const img = window.img;
+
+      expect(img.placeholder.ratio).to.be.below(1, 'Aspect ratio for a landscape image should be less than 1');
+      expect(img.placeholder.ratio).to.be.above(0, 'Aspect ratio for a landscape image should be greater than 0');
+    });
+  });
+
+  it('?placeholder: returns the correct ratio for a portrait image', () => {
+    const compiler = makeCompiler({
+      files: {
+        'main.js': `window.img = require('${TOR_IMG}?placeholder');`,
+      },
+      rule: RULE,
+    });
+
+    return runTest(compiler, (window) => {
+      const img = window.img;
+
+      expect(img.placeholder.ratio).to.be.above(1, 'Aspect ratio for a portrait image should be greater than 1');
     });
   });
 
