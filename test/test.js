@@ -210,7 +210,7 @@ function validateImgGeneric(img, lightweight = false) {
 
 function validatePlaceholder(placeholder, lightweight = false) {
   expect(placeholder.url).to.be.a('string');
-  expect(placeholder.ratio).to.be.within(0, 1, 'Ratio should be a float [0, 1]');
+  expect(placeholder.ratio).to.be.above(0, 'Ratio should be a float greater than zero');
   expect(placeholder.color).to.be.an('array', 'Color should be an array of 4 numbers.');
 
   expect(placeholder.color.length).to.equal(4, 'Color should be an array of 4 numbers.');
