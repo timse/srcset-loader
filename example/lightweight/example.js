@@ -11,7 +11,7 @@ function createDivWithClass(className) {
 function createPlaceholder(src, placeholderOptions) {
   const wrapper = createDivWithClass('wrapper');
   const ratioPlaceholder = createDivWithClass('');
-  ratioPlaceholder.style.setProperty('padding-bottom', src.placeholder.ratio * 100 + '%');
+  ratioPlaceholder.style.setProperty('padding-bottom', 100 / src.placeholder.ratio + '%');
 
   const imageWrapper = createDivWithClass('image-wrapper');
 

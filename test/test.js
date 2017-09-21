@@ -11,6 +11,7 @@ const expect = chai.expect;
 
 const FILE_TYPES = /\.(jpe?g|png|gif|svg)$/i;
 const WHALE_IMG = './resources/whale.jpeg';
+const TOR_IMG = './resources/tor-portrait.jpeg';
 
 // matches the format
 // ((<path>( <size>)?)(,|$))+
@@ -57,6 +58,37 @@ describe('Resource Query', () => {
 
       validateImgGeneric(img);
       validatePlaceholder(img.placeholder);
+    });
+  });
+
+  it('?placeholder: returns the correct ratio for a landscape image', () => {
+    const compiler = makeCompiler({
+      files: {
+        'main.js': `window.img = require('${WHALE_IMG}?placeholder');`,
+      },
+      rule: RULE,
+    });
+
+    return runTest(compiler, (window) => {
+      const img = window.img;
+
+      expect(img.placeholder.ratio).to.be.above(1, 'Aspect ratio for a landscape image should be greater than 1');
+    });
+  });
+
+  it('?placeholder: returns the correct ratio for a portrait image', () => {
+    const compiler = makeCompiler({
+      files: {
+        'main.js': `window.img = require('${TOR_IMG}?placeholder');`,
+      },
+      rule: RULE,
+    });
+
+    return runTest(compiler, (window) => {
+      const img = window.img;
+
+      expect(img.placeholder.ratio).to.be.above(0, 'Aspect ratio for a portrait image should be greater than 0');
+      expect(img.placeholder.ratio).to.be.below(1, 'Aspect ratio for a portrait image should be less than 1');
     });
   });
 
@@ -210,7 +242,7 @@ function validateImgGeneric(img, lightweight = false) {
 
 function validatePlaceholder(placeholder, lightweight = false) {
   expect(placeholder.url).to.be.a('string');
-  expect(placeholder.ratio).to.be.within(0, 1, 'Ratio should be a float [0, 1]');
+  expect(placeholder.ratio).to.be.above(0, 'Ratio should be a float greater than zero');
   expect(placeholder.color).to.be.an('array', 'Color should be an array of 4 numbers.');
 
   expect(placeholder.color.length).to.equal(4, 'Color should be an array of 4 numbers.');

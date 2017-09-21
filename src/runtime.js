@@ -19,7 +19,7 @@ export function blurPlaceholder(img, toBase64) {
 <svg 
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns="http://www.w3.org/2000/svg" 
-  viewBox="0 0 ${10 * ratio} ${10 * (1 - ratio)}"
+  viewBox="0 0 ${10 * ratio} 10"
 >
   <filter id="x">
     <feGaussianBlur stdDeviation="1" />
