@@ -1,4 +1,5 @@
 # `srcset`-loader for webpack 2
+[![Build Status](https://travis-ci.org/timse/srcset-loader.svg?branch=master)](https://travis-ci.org/timse/srcset-loader)
 
 A super flexible and easily chainable (with other loaders like `file-loader` or `image-webpack-loader`) srcset loader for webpack 2.
 
@@ -23,10 +24,10 @@ const webpackConfig = {
     rules: [{
       // match image files
       test: /\.(jpe?g|png|svg|gif)$/,
-      
+
       // match one of the loader's main parameters (sizes and placeholder)
       resourceQuery: /[?&](sizes|placeholder)(=|&|\[|$)/,
-      
+
       use: [
         'srcset-loader',
 
@@ -36,7 +37,7 @@ const webpackConfig = {
       ],
     }],
   },
-  
+
   // ...
 };
 ```
@@ -53,8 +54,8 @@ Basically all this loader does is creating multiple requests for each `srcset` i
 
 ### Why is the `srcset` loader before the other loaders
 
-Its actually very important that you add the `srcset-loader` before all the other loaders, as the `srcset-loader` uses 
-webpack's *pitch* mechanism to split your import request into multiple import request which will all use the loaders 
+Its actually very important that you add the `srcset-loader` before all the other loaders, as the `srcset-loader` uses
+webpack's *pitch* mechanism to split your import request into multiple import request which will all use the loaders
 specified after `srcset-loader`.
 
 Simplified it works something like this:
@@ -150,7 +151,7 @@ e.g.
 
 ```js
 import image from './image.jpeg?sizes=200w+800w&placeholder';
-/* 
+/*
 image.placeholder => {
   url: 'data:image/svg+xml;base64,...',
   color: [198, 123, 87, 1],
