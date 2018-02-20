@@ -19,7 +19,7 @@ export function resizeImage(content, width, height) {
 
   // dont scale up images, let the browser do that
   // and btw. wtf stop trying to fool me :P
-  if (source.width < width) {
+  if (source.width <= width) {
     return Promise.resolve(content);
   }
 
