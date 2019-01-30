@@ -34,7 +34,7 @@
     "get-pixels": "3.3.0",
     "image-size": "0.5.1",
     "loader-utils": "1.1.0",
-    "sharp": "^0.19.0"
+    "sharp": "^0.21.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
