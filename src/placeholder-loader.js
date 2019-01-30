@@ -58,7 +58,7 @@ function createPlaceholder(content, options) {
         </svg>`
       );
 
-      return bufferToDataUri('.svg', new Buffer(blurredImage, 'utf8'));
+      return bufferToDataUri('.svg', Buffer.from(blurredImage, 'utf8'));
     })
     .then((url) => {
       placeholderUrl = url;
